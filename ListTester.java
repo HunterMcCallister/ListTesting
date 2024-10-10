@@ -145,7 +145,9 @@ public class ListTester {
 		//newly constructed empty list
 		testEmptyList(newList, "newList");
 		//empty to 1-element list
+		testSingleElementList(emptyList_addA_A, "emptyList_addA_A", LIST_A, STRING_A);
 		testSingleElementList(emptyList_addToFrontA_A, "emptyList_addToFrontA_A", LIST_A, STRING_A);
+		testSingleElementList(emptyList_addToRearA_A, "emptyList_addToRearA_A", LIST_A, STRING_A);
 		//1-element to empty list
 		//1-element to 2-element
 		testTwoElementList(A_addToFrontB_BA, "A_addToFrontB_BA", LIST_BA, STRING_BA);
@@ -214,7 +216,28 @@ public class ListTester {
 		list.addToFront(ELEMENT_A);
 		return list;
 	}
-	private Scenario<Integer> emptyList_addToFrontA_A = () -> emptyList_addToFrontA_A();
+	private Scenario<Integer> emptyList_addToRearA_A = () -> emptyList_addToRearA_A();
+	
+	/** Scenario: empty list -> add(A) -> [A] 
+	 * @return [A] after add(A)
+	 */
+	private IndexedUnsortedList<Integer> emptyList_addA_A() {
+		IndexedUnsortedList<Integer> list = newList(); 
+		list.addToRear(ELEMENT_A);
+		return list;
+	}
+	private Scenario<Integer> emptyList_addA_A = () -> emptyList_addA_A();
+
+	/** Scenario: empty list -> addToRear(A) -> [A] 
+	 * @return [A] after addToRear(A)
+	 */
+	private IndexedUnsortedList<Integer> emptyList_addToRearA_A() {
+		IndexedUnsortedList<Integer> list = newList(); 
+		list.addToRear(ELEMENT_A);
+		return list;
+	}
+	private Scenario<Integer> emptyList_addToFrontA_A = () -> emptyList_addToRearA_A();
+
 
 	/** Scenario: [A] -> addToFront(B) -> [B,A] 
 	 * @return [B,A] after addToFront(B)
