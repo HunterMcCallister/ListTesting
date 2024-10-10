@@ -65,8 +65,6 @@ Define tests for at least 21 change scenarios, in addition to the 3 given as exa
 	listIterator() throws UnsupportedOperationException
 	listIterator(0) throws UnsupportedOperationException
 	toString() returns "[A]"
-
-
 3) [] -> addToRear(A) -> [A]
   Tests:
 	addToFront(B) throws no Exception
@@ -102,7 +100,6 @@ Define tests for at least 21 change scenarios, in addition to the 3 given as exa
 	listIterator() throws UnsupportedOperationException
 	listIterator(0) throws UnsupportedOperationException
 	toString() returns "[A]"
-	
 4) [] -> add(A) -> [A]
   Tests:
 	addToFront(B) throws no Exception
@@ -138,7 +135,6 @@ Define tests for at least 21 change scenarios, in addition to the 3 given as exa
 	listIterator() throws UnsupportedOperationException
 	listIterator(0) throws UnsupportedOperationException
 	toString() returns "[A]"
-
 5) [] -> add(0,A) -> [A]
   Tests:
 	addToFront(B) throws no Exception
@@ -174,7 +170,6 @@ Define tests for at least 21 change scenarios, in addition to the 3 given as exa
 	listIterator() throws UnsupportedOperationException
 	listIterator(0) throws UnsupportedOperationException
 	toString() returns "[A]"
-
 6) [A] -> addToFront(B) -> [B,A]
   Tests:
     addToFront(C) throws no Exceptions
@@ -263,7 +258,6 @@ Define tests for at least 21 change scenarios, in addition to the 3 given as exa
 	listIterator() throws UnsupportedOperationException
 	listIterator(0) throws UnsupportedOperationException
 	toString() returns "[A, B]"
-
 8) [A] -> addAfter(B,A) -> [A,B]
   Tests:
 	addToFront(C) throws no Exception
@@ -308,7 +302,6 @@ Define tests for at least 21 change scenarios, in addition to the 3 given as exa
 	listIterator() throws UnsupportedOperationException
 	listIterator(0) throws UnsupportedOperationException
 	toString() returns "[A, B]"
-
 9) [A] -> add(B) -> [A,B]
   Tests:
 	addToFront(C) throws no Exception
@@ -353,7 +346,6 @@ Define tests for at least 21 change scenarios, in addition to the 3 given as exa
 	listIterator() throws UnsupportedOperationException
 	listIterator(0) throws UnsupportedOperationException
 	toString() returns "[A, B]"
-
 10) [A] -> add(0,B) -> [B,A]
   Tests:
 	addToFront(C) throws no Exception
@@ -398,7 +390,6 @@ Define tests for at least 21 change scenarios, in addition to the 3 given as exa
 	listIterator() throws UnsupportedOperationException
 	listIterator(0) throws UnsupportedOperationException
 	toString() returns "[B, A]"
-
 11) [A] -> add(1,B) -> [A,B]
   Tests:
 	addToFront(C) throws no Exception
@@ -443,7 +434,6 @@ Define tests for at least 21 change scenarios, in addition to the 3 given as exa
 	listIterator() throws UnsupportedOperationException
 	listIterator(0) throws UnsupportedOperationException
 	toString() returns "[A, B]"
-
 12) [A] -> removeFirst() -> []
   Tests:
 	addToFront(B) throws no Exception
@@ -469,7 +459,6 @@ Define tests for at least 21 change scenarios, in addition to the 3 given as exa
 	listIterator() throws UnsupportedOperationException
 	listIterator(0) throws UnsupportedOperationException
 	toString() returns "[]"
-
 13) [A] -> removeLast() -> []
   Tests:
 	addToFront(B) throws no Exception
@@ -495,7 +484,6 @@ Define tests for at least 21 change scenarios, in addition to the 3 given as exa
 	listIterator() throws UnsupportedOperationException
 	listIterator(0) throws UnsupportedOperationException
 	toString() returns "[]"
-
 14) [A] -> remove(A) -> []
   Tests:
 	addToFront(B) throws no Exception
@@ -521,7 +509,6 @@ Define tests for at least 21 change scenarios, in addition to the 3 given as exa
 	listIterator() throws UnsupportedOperationException
 	listIterator(0) throws UnsupportedOperationException
 	toString() returns "[]"
-
 15) [A] -> remove(0) -> []
   Tests:
 	addToFront(B) throws no Exception
@@ -547,7 +534,6 @@ Define tests for at least 21 change scenarios, in addition to the 3 given as exa
 	listIterator() throws UnsupportedOperationException
 	listIterator(0) throws UnsupportedOperationException
 	toString() returns "[]"
-
 16) [A] -> set(0,B) -> [B]
   Tests:
 	addToFront(C) throws no Exception
@@ -585,7 +571,6 @@ Define tests for at least 21 change scenarios, in addition to the 3 given as exa
 	listIterator() throws UnsupportedOperationException
 	listIterator(0) throws UnsupportedOperationException
 	toString() returns "[B]"
-
 17) [A,B] -> addToFront(C) -> [C,A,B]
   Tests:
 	addToFront(D) throws no Exception
@@ -638,7 +623,6 @@ Define tests for at least 21 change scenarios, in addition to the 3 given as exa
 	listIterator() throws UnsupportedOperationException
 	listIterator(0) throws UnsupportedOperationException
 	toString() returns "[C, A, B]"
-
 18) [A,B] -> addToRear(C) -> [A,B,C]
   Tests:
 	addToFront(D) throws no Exception
@@ -691,7 +675,6 @@ Define tests for at least 21 change scenarios, in addition to the 3 given as exa
 	listIterator() throws UnsupportedOperationException
 	listIterator(0) throws UnsupportedOperationException
 	toString() returns "[A, B, C]"
-
 19) [A,B] -> addAfter(C,A) -> [A,C,B]
   Tests:
 	addToFront(D) throws no Exception
