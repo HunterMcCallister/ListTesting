@@ -192,6 +192,7 @@ public class ListTester {
         //2-element to 1-element
         //2-element to 3-element
         testThreeElementList(AB_addToFrontC_CAB, "AB_addToFrontC_CAB", LIST_CAB, STRING_CAB);
+		testThreeElementList(AB_addToRearC_ABC, "AB_addToRearC_ABC", LIST_ABC, STRING_ABC);
         //2-element to changed 2-element via set()
         //3-element to 2-element
         //3-element to changed 3-element via set()
@@ -451,6 +452,19 @@ public class ListTester {
     }
     private Scenario<Integer> AB_addToFrontC_CAB = () -> AB_addToFrontC_CAB();
 
+	    /**
+     * Scenario: [A,B] -> addToRear(C) -> [A,B,C]
+     *
+     * @return [A,B,C] after addToRear(C)
+     */
+    private IndexedUnsortedList<Integer> AB_addToRearC_ABC() {
+        IndexedUnsortedList<Integer> list = A_addB_AB();
+        list.addToRear(ELEMENT_C);
+        return list;
+    }
+    private Scenario<Integer> AB_addToRearC_ABC = () -> AB_addToRearC_ABC();
+
+	
     /////////////////////////////////
 	//XXX Tests for 0-element list
 	/////////////////////////////////
