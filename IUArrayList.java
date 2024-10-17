@@ -1,4 +1,3 @@
-import java.lang.annotation.Target;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -20,6 +19,7 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
 
     private int rear;
     private T[] array;
+    //keeps track to modifications when adding or removing.
     private int modCount;
 
    /** Creates an empty list with default initial capacity */
@@ -29,11 +29,11 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
 
     /** 
 	 * Creates an empty list with the given initial capacity
-	 * @param defaultCapacity
+	 * @param initialCapacity
 	 */
     @SuppressWarnings("unchecked")
-    public IUArrayList(int defaultCapacity) {
-        array = (T[])(new Object[defaultCapacity]);
+    public IUArrayList(int initialCapacity) {
+        array = (T[])(new Object[initialCapacity]);
         rear = 0;
         modCount = 0;
     }
