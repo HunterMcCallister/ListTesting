@@ -1,3 +1,4 @@
+import java.lang.annotation.Target;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -38,52 +39,88 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
     }
 
     /** Double the capacity of array */
-	private void expandCapacity() {
+	private void expandIfNecessary() {
+        if(array.length == rear){
 		array = Arrays.copyOf(array, array.length*2);
-	}
-
+        }
+    }
 
 
     @Override
     public void addToFront(T element) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addToFront'");
+        expandIfNecessary();
+        for (int i = rear; i > 0; i--){
+            array[i] = array [i -1];
+        }
+        array[0] = element;
+        rear++;
+        modCount++;
     }
 
     @Override
     public void addToRear(T element) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addToRear'");
+        expandIfNecessary();
+        array[rear] = element;
+        rear++;
+        modCount++;
     }
 
     @Override
     public void add(T element) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'add'");
+        addToRear(element);
+        modCount++;
     }
 
     @Override
     public void addAfter(T element, T target) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addAfter'");
+        int targetIndex = indexOf(target);
+
+        if (targetIndex < 0 || targetIndex >= rear){
+            throw new NoSuchElementException();
+        }
+    
+        expandIfNecessary();
+        for (int i = targetIndex; i < rear; i++){
+            array[i] = array[i+ 1];
+        }
+        rear++;
+        array[targetIndex] = element;
+        modCount++;
+
     }
 
     @Override
     public void add(int index, T element) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'add'");
+        if (index < 0 || index > rear){
+            throw new IndexOutOfBoundsException();
+        }
+        expandIfNecessary();
+        for (int i = rear; i > index; i--){
+            array[i] = array[i-1];
+        }
+        array[index] = element;
+        rear ++;
+        modCount++;
     }
 
     @Override
     public T removeFirst() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeFirst'");
+        T retVal = array[0];
+        for (int i = 0; i < array.length -1 ; i++){
+            array[i]= array[i+1];
+        }
+        rear--;
+        modCount++;
+        return retVal;
     }
 
     @Override
     public T removeLast() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeLast'");
+        T retVal = array[rear-1];
+        array[rear-1] = null;
+        rear--;
+        modCount++;
+        return retVal;
     }
 
     @Override
@@ -108,20 +145,33 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public T remove(int index) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'remove'");
+        if (index < 0 || index >= rear){
+            throw new IndexOutOfBoundsException();
+        }
+        T retVal = array[index];
+        array[index] = null;
+        rear--;
+        for (int i = index; i < rear; i++){
+            array[i] = array[i+1];
+        }
+        modCount++;
+        return retVal;
     }
 
     @Override
     public void set(int index, T element) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'set'");
+        if (index < 0 || index >= rear){
+            throw new IndexOutOfBoundsException();
+        }
+        array[index] = element;
     }
 
     @Override
     public T get(int index) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'get'");
+        if (index < 0 || index >= rear){
+            throw new IndexOutOfBoundsException();
+        }
+        return array[index];
     }
 
     @Override
@@ -144,14 +194,18 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public T first() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'first'");
+        if (isEmpty()){
+            throw new NoSuchElementException();
+        }
+        return array[0];
     }
 
     @Override
     public T last() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'last'");
+        if (isEmpty()){
+            throw new NoSuchElementException();
+        }
+        return array[rear-1];
     }
 
     @Override
@@ -162,8 +216,7 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public boolean isEmpty() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isEmpty'");
+        return rear == 0;
     }
 
     @Override
@@ -183,7 +236,7 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
 			sb.delete(sb.length() - 2, sb.length()); // remove trailing ", "
 		}
 		sb.append("]");
-		return sb.toString():
+		return sb.toString();
 	}
 
     @Override
