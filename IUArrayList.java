@@ -170,6 +170,21 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
     public int size() {
         return rear;
     }
+	
+	@Override
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+		sb.append("[");
+		for (T element : this) {
+			sb.append(element.toString());
+			sb.append(", ");
+		}
+		if (size() > 0) {
+			sb.delete(sb.length() - 2, sb.length()); // remove trailing ", "
+		}
+		sb.append("]");
+		return sb.toString():
+	}
 
     @Override
     public Iterator<T> iterator() {
