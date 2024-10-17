@@ -1,22 +1,47 @@
+import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
-import java.util.ConcurrentModificationException;
 
+/**
+ * Array-based implementation of IndexedUnsortedList.
+ * An Iterator with working remove() method is implemented, but
+ * ListIterator is unsupported. 
+ * 
+ * @author Hunter McCallister
+ *
+ * @param <T> type to store
+ */
 public class IUArrayList<T> implements IndexedUnsortedList<T> {
-    public static final int DEFAULT_CAPACITY = 10;
+    private static final int DEFAULT_CAPACITY = 10;
+    private static final int NOT_FOUND = -1;
+
     private int rear;
     private T[] array;
     private int modCount;
 
+   /** Creates an empty list with default initial capacity */
     public IUArrayList(){
         this(DEFAULT_CAPACITY);
     }
-    
 
+    /** 
+	 * Creates an empty list with the given initial capacity
+	 * @param defaultCapacity
+	 */
+    @SuppressWarnings("unchecked")
     public IUArrayList(int defaultCapacity) {
-        //TODO Auto-generated constructor stub
+        array = (T[])(new Object[defaultCapacity]);
+        rear = 0;
+        modCount = 0;
     }
+
+    /** Double the capacity of array */
+	private void expandCapacity() {
+		array = Arrays.copyOf(array, array.length*2);
+	}
+
 
 
     @Override
@@ -63,8 +88,22 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public T remove(T element) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'remove'");
+        int index = indexOf(element);
+		if (index == NOT_FOUND) {
+			throw new NoSuchElementException();
+		}
+		
+		T retVal = array[index];
+		
+		rear--;
+		//shift elements
+		for (int i = index; i < rear; i++) {
+			array[i] = array[i+1];
+		}
+		array[rear] = null;
+		modCount++;
+		
+		return retVal;
     }
 
     @Override
@@ -87,8 +126,20 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public int indexOf(T element) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'indexOf'");
+        int index = NOT_FOUND;
+		
+		if (!isEmpty()) {
+			int i = 0;
+			while (index == NOT_FOUND && i < rear) {
+				if (element.equals(array[i])) {
+					index = i;
+				} else {
+					i++;
+				}
+			}
+		}
+		
+		return index;
     }
 
     @Override
@@ -105,8 +156,8 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public boolean contains(T target) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'contains'");
+        return (indexOf(target) != NOT_FOUND);
+        
     }
 
     @Override
