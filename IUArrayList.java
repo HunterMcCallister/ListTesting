@@ -80,7 +80,7 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
         }
     
         expandIfNecessary();
-        for (int i = targetIndex; i > targetIndex; i--){
+        for (int i = rear; i > targetIndex; i--){
             array[i] = array[i - 1];
         }
         rear++;
@@ -105,9 +105,13 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public T removeFirst() {
+        if(isEmpty()) {
+            throw new NoSuchElementException();
+        }
         T retVal = array[0];
-        for (int i = 0; i < array.length -1 ; i++){
-            array[i]= array[i+1];
+
+        for (int i = 0; i < array.length -1; i++){
+            array[i] = array[i + 1];
         }
         rear--;
         modCount++;
@@ -116,8 +120,11 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public T removeLast() {
+        if(isEmpty()){
+            throw new NoSuchElementException();
+        }
         T retVal = array[rear-1];
-        array[rear-1] = null;
+        array[rear-1] = null;    
         rear--;
         modCount++;
         return retVal;
