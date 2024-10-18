@@ -38,7 +38,7 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
         modCount = 0;
     }
 
-    /** Double the capacity of array */
+    /** Double the capacity of array if needed before adding*/
 	private void expandIfNecessary() {
         if(array.length == rear){
 		array = Arrays.copyOf(array, array.length*2);
@@ -80,11 +80,11 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
         }
     
         expandIfNecessary();
-        for (int i = targetIndex; i < rear; i++){
-            array[i] = array[i+ 1];
+        for (int i = targetIndex; i > targetIndex; i--){
+            array[i] = array[i - 1];
         }
         rear++;
-        array[targetIndex] = element;
+        array[targetIndex + 1] = element;
         modCount++;
 
     }
@@ -164,6 +164,7 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
             throw new IndexOutOfBoundsException();
         }
         array[index] = element;
+        modCount++;
     }
 
     @Override
