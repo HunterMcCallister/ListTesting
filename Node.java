@@ -14,13 +14,20 @@ public class Node<T> {
 		this.element = element;
 		this.nextNode = nextNode;
 	}
-	//Sourcce action for getters and setters for element and next node.
 
 	public T getElement() {
-		return element
+		return element;
 	}
 	public void setElement(T element){
 		this.element = element;
+	}
+
+	public Node<T> getNextNode() {
+		return nextNode;
+	}
+
+	public void setNextNode(Node<T> nextNode) {
+		this.nextNode = nextNode;
 	}
 
 }

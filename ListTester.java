@@ -1,10 +1,8 @@
 
-import java.net.InterfaceAddress;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
-import java.util.function.IntBinaryOperator;
 
 /**
  * A unit test class for lists that implement IndexedUnsortedList. This is a set
@@ -23,7 +21,7 @@ public class ListTester {
         goodList, badList, arrayList, singleLinkedList, doubleLinkedList
     };
     // TODO: THIS IS WHERE YOU CHOOSE WHICH LIST TO TEST
-    private final static ListToUse LIST_TO_USE = ListToUse.arrayList;
+    private final static ListToUse LIST_TO_USE = ListToUse.singleLinkedList;
 
     // possible results expected in tests
     private enum Result {
@@ -280,9 +278,9 @@ public class ListTester {
             case arrayList:
                 listToUse = new IUArrayList<Integer>();
                 break;
-//		case singleLinkedList:
-//			listToUse = new IUSingleLinkedList<Integer>();
-//			break;
+		    case singleLinkedList:
+			    listToUse = new IUSingleLinkedList<Integer>();
+			    break;
 //		case doubleLinkedList:
 //			listToUse = new IUDoubleLinkedList<Integer>();
 //			break;
