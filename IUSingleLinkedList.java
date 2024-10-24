@@ -3,11 +3,18 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
+/**
+ * Single-linked node-based implementation of IndexedUnsortedList with basic
+ * Iterator
+ * including remove
+ * 
+ * @author Hunter McCallister
+ */
 public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
-    private Node<T> head; //technically only required instance var
-    private Node<T> tail;
-    private int size;
+    private Node<T> head; // technically only required instance var
+    private Node<T> tail; // makes addToRear O(1),
+    private int size;// makes size O(1)
     private int modCount;
 
     /**
@@ -21,32 +28,80 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public void addToFront(T element) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addToFront'");
+
+        Node<T> newNode = new Node<T>(element);
+        newNode.setNextNode(head);
+        head = newNode;
+        if (tail == null) {
+            tail = newNode;
+        }
+        size++;
+        modCount++;
     }
 
     @Override
     public void addToRear(T element) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addToRear'");
+        Node<T> newNode = new Node<T>(element);
+        if (isEmpty()) { // or size==0
+            head = newNode;
+        } else {
+            tail.setNextNode(newNode);
+        }
+        tail = newNode;
+        size++;
+        modCount++;
     }
 
     @Override
     public void add(T element) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'add'");
+        addToRear(element);
     }
 
     @Override
     public void addAfter(T element, T target) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addAfter'");
+        // Node<T>curNode = head;
+        // while(target != curNode && curNode.getNextNode() != null){
+        //     curNode = curNode.getNextNode();   
+        // } 
+        // if(curNode.getNextNode() == null){
+        //     throw new NoSuchElementException();
+        // }
+        // if (curNode == tail){
+        //     add(element);
+        // } else {
+
+        
+
+        // Node<T> newElement = new Node<T>(element);
+        // Node<T> tempNode = curNode.getNextNode();
+        // curNode.setNextNode(newElement);
+        // newElement.setNextNode(tempNode);
+        // modCount++;
+        // size++;
+        // }
     }
 
     @Override
     public void add(int index, T element) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'add'");
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (index == 0) {
+            addToFront(element);
+        } else {
+            Node<T> curNode = head;
+            for (int i = 0; i < index - 1; i++) {
+                curNode = curNode.getNextNode();
+            }
+            Node<T> newNode = new Node<T>(element);
+            newNode.setNextNode(curNode.getNextNode());
+            curNode.setNextNode(newNode);
+            if (newNode.getNextNode() == null) { // or curNode == tail
+                tail = newNode;
+            }
+        }
+        size++;
+        modCount++;
     }
 
     @Override
@@ -63,8 +118,38 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public T remove(T element) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'remove'");
+        T retVal;
+
+        if (isEmpty()){
+            throw new NoSuchElementException(); //or next was null
+        }
+
+        if (element.equals(head.getElement())){
+            retVal = head.getElement();
+            head = head.getNextNode();
+            if (head == null){//head was the only node
+                tail = null;//the list is empty and there are no nodes.
+            }
+        }else {
+        Node<T> currentNode = head;
+        while (currentNode.getNextNode() != null //curNode == tail also works
+            && !currentNode.getNextNode().getElement().equals(element)){
+            currentNode = currentNode.getNextNode();
+        }
+        if (currentNode == tail){  //or next was null
+            throw new NoSuchElementException();
+        }
+        retVal = currentNode.getNextNode().getElement();
+        currentNode.setNextNode(currentNode.getNextNode().getNextNode());
+        if (currentNode.getNextNode() == null){
+            tail = currentNode;
+        }
+    }
+
+        size--;
+        modCount++;
+
+        return retVal;
     }
 
     @Override
@@ -117,14 +202,13 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public boolean contains(T target) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'contains'");
+        return indexOf(target) != 1;
     }
 
     @Override
     public boolean isEmpty() {
         return size == 0;
-        //return head == null; you can use either one.
+        // return head == null; you can use either one.
     }
 
     @Override
@@ -164,20 +248,4 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'listIterator'");
     }
-
-    /**
-     * add this to size
-     *
-     *
-     *
-     *
-
-     *      *indexOf Node<T> curentNode = head; int currentIndex = 0; while
-     * (currentNode != null && !currentNode.getElement().equals(element)){
-     * currentNode = currentNode.getNextNode(); currentIndex++; } if
-     * (currentNode == null) { #currentiIndex = -1; } return currentIndex;
-     *
-     *
-
-          **/
 }
