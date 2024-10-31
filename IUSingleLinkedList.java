@@ -1,4 +1,5 @@
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
@@ -59,26 +60,22 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public void addAfter(T element, T target) {
-        // Node<T>curNode = head;
-        // while(target != curNode && curNode.getNextNode() != null){
-        //     curNode = curNode.getNextNode();   
-        // } 
-        // if(curNode.getNextNode() == null){
-        //     throw new NoSuchElementException();
-        // }
-        // if (curNode == tail){
-        //     add(element);
-        // } else {
+        Node<T> currentNode = head;
+        while (currentNode != null && !currentNode.getElement().equals(target)) {
+            currentNode = currentNode.getNextNode();
+        }
+        if (currentNode == null) {
+            throw new NoSuchElementException();
+        }
+        Node<T> newNode = new Node<T>(element);
+        newNode.setNextNode(currentNode.getNextNode());
+        currentNode.setNextNode(newNode);
+        if (newNode.getNextNode() == null) {
+            tail = newNode;
+        }
 
-        
-
-        // Node<T> newElement = new Node<T>(element);
-        // Node<T> tempNode = curNode.getNextNode();
-        // curNode.setNextNode(newElement);
-        // newElement.setNextNode(tempNode);
-        // modCount++;
-        // size++;
-        // }
+        size++;
+        modCount++;
     }
 
     @Override
@@ -88,6 +85,8 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
         }
         if (index == 0) {
             addToFront(element);
+        } else if (index == size) {
+            addToRear(element);
         } else {
             Node<T> curNode = head;
             for (int i = 0; i < index - 1; i++) {
@@ -96,78 +95,132 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
             Node<T> newNode = new Node<T>(element);
             newNode.setNextNode(curNode.getNextNode());
             curNode.setNextNode(newNode);
-            if (newNode.getNextNode() == null) { // or curNode == tail
-                tail = newNode;
-            }
+            size++;
+            modCount++;
         }
-        size++;
-        modCount++;
     }
 
     @Override
     public T removeFirst() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeFirst'");
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        T retVal = head.getElement();
+        head = head.getNextNode();
+        if (head == null) {
+            tail = null;
+        }
+        size--;
+        modCount++;
+        return retVal;
     }
 
     @Override
     public T removeLast() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeLast'");
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        T retVal;
+        if (size == 1) {
+            retVal = head.getElement();
+            head = null;
+            tail = null;
+        } else {
+            Node<T> curNode = head;
+            while (curNode.getNextNode() != tail) {
+                curNode = curNode.getNextNode();
+            }
+            retVal = tail.getElement();
+            curNode.setNextNode(null);
+            tail = curNode;
+        }
+        size--;
+        modCount++;
+        return retVal;
     }
 
     @Override
     public T remove(T element) {
-        T retVal;
-
-        if (isEmpty()){
-            throw new NoSuchElementException(); //or next was null
-        }
-
-        if (element.equals(head.getElement())){
-            retVal = head.getElement();
-            head = head.getNextNode();
-            if (head == null){//head was the only node
-                tail = null;//the list is empty and there are no nodes.
-            }
-        }else {
-        Node<T> currentNode = head;
-        while (currentNode.getNextNode() != null //curNode == tail also works
-            && !currentNode.getNextNode().getElement().equals(element)){
-            currentNode = currentNode.getNextNode();
-        }
-        if (currentNode == tail){  //or next was null
+        if (isEmpty()) {
             throw new NoSuchElementException();
         }
-        retVal = currentNode.getNextNode().getElement();
-        currentNode.setNextNode(currentNode.getNextNode().getNextNode());
-        if (currentNode.getNextNode() == null){
-            tail = currentNode;
+        T retVal;
+        if (element.equals(head.getElement())) {
+            retVal = head.getElement();
+            head = head.getNextNode();
+            if (head == null) {
+                tail = null;
+            }
+        } else {
+            Node<T> currentNode = head;
+            while (currentNode.getNextNode() != null && !currentNode.getNextNode().getElement().equals(element)) {
+                currentNode = currentNode.getNextNode();
+            }
+            if (currentNode.getNextNode() == null) {
+                throw new NoSuchElementException();
+            }
+            retVal = currentNode.getNextNode().getElement();
+            currentNode.setNextNode(currentNode.getNextNode().getNextNode());
+            if (currentNode.getNextNode() == null) {
+                tail = currentNode;
+            }
         }
-    }
-
         size--;
         modCount++;
-
         return retVal;
     }
 
     @Override
     public T remove(int index) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'remove'");
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+        T retVal;
+        if (index == 0) {
+            retVal = removeFirst();
+        } else {
+            Node<T> curNode = head;
+            for (int i = 0; i < index - 1; i++) {
+                curNode = curNode.getNextNode();
+            }
+            retVal = curNode.getNextNode().getElement();
+            curNode.setNextNode(curNode.getNextNode().getNextNode());
+            if (curNode.getNextNode() == null) {
+                tail = curNode;
+            }
+            size--;
+            modCount++;
+        }
+        return retVal;
     }
 
     @Override
     public void set(int index, T element) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'set'");
+        if (index < 0 || index >= size()) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        Node<T> curNode = head;
+
+        for (int i = 0; i < index; i++) {
+            curNode = curNode.getNextNode();
+        }
+
+        curNode.setElement(element);
+
+        modCount++;
     }
 
     @Override
     public T get(int index) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'get'");
+        if (index < 0 || index >= size()) {
+            throw new IndexOutOfBoundsException();
+        }
+        Node<T> curNode = head;
+        for (int i = 0; i < index; i++) {
+            curNode = curNode.getNextNode();
+        }
+        return curNode.getElement();
     }
 
     @Override
@@ -202,7 +255,7 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public boolean contains(T target) {
-        return indexOf(target) != 1;
+        return indexOf(target) != -1;
     }
 
     @Override
@@ -233,8 +286,7 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public Iterator<T> iterator() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'iterator'");
+        return new SLLIterator();
     }
 
     @Override
@@ -248,4 +300,76 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'listIterator'");
     }
+
+    /**
+     * Iterator class to use with IUSLL to keep encapsulation. Do not need to create
+     * <T>
+     */
+    private class SLLIterator implements Iterator<T> {
+        private Node<T> iterNextNode;
+        private Node<T> lastReturnedNode;
+        private boolean canRemove;
+        private int iterModCount;
+
+        public SLLIterator() {
+            iterNextNode = head;
+            lastReturnedNode = null;
+            canRemove = false;
+            iterModCount = modCount;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (iterModCount != modCount) {
+                throw new ConcurrentModificationException();
+            }
+            return iterNextNode != null;
+        }
+
+        @Override
+        public T next() {
+            if (iterModCount != modCount) {
+                throw new ConcurrentModificationException();
+            }
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            lastReturnedNode = iterNextNode;
+            iterNextNode = iterNextNode.getNextNode();
+            canRemove = true;
+            return lastReturnedNode.getElement();
+        }
+
+        @Override
+        public void remove() {
+            if (iterModCount != modCount) {
+                throw new ConcurrentModificationException();
+            }
+            if (!canRemove) {
+                throw new IllegalStateException();
+            }
+            if (lastReturnedNode == head) {
+                head = iterNextNode;
+                if (head == null) {
+                    tail = null;
+                }
+            } else {
+                Node<T> prevNode = head;
+                while (prevNode.getNextNode() != lastReturnedNode) {
+                    prevNode = prevNode.getNextNode();
+                }
+                prevNode.setNextNode(iterNextNode);
+                if (iterNextNode == null) {
+                    tail = prevNode;
+                }
+            }
+            lastReturnedNode = null;
+            canRemove = false;
+            size--;
+            modCount++;
+            iterModCount++;
+        }
+
+    }
+
 }
