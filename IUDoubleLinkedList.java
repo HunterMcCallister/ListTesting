@@ -72,14 +72,18 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public T removeFirst() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeFirst'");
+        ListIterator<T> lit = listIterator();
+        T retVal = lit.next();
+        lit.remove();
+        return retVal;
     }
 
     @Override
     public T removeLast() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeLast'");
+        ListIterator<T> lit = listIterator(size);
+        T retVal = lit.next();
+        lit.remove();
+        return retVal;
     }
 
     @Override
@@ -105,6 +109,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
         if (index >= size || index < 0) {
             throw new IndexOutOfBoundsException();
         }
+
         Node<T> curNode = head;
         for (int i = 0; i < index; i++) {
             curNode = curNode.getNextNode();
@@ -217,7 +222,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
         private Node<T> nextNode;
         private int nextIndex;
         private int iterModCount;
-        private boolean canRemove;
+        private Node<T> lastReturnedNode;
 
         /** initializes iterator at the start of the list */
         public DLLIterator(){
@@ -232,10 +237,11 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
             if (startingIndex < 0 || startingIndex > size){
                 throw new IndexOutOfBoundsException();
             }
-            nextNode = head;
+            nextNode = head; //Should start from the best end
             for (int i = 0; i < startingIndex; i++) {
                 nextNode = nextNode.getNextNode();
             }
+            lastReturnedNode = null;
             nextIndex = startingIndex;
             iterModCount = modCount;
 
@@ -255,6 +261,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
                 throw new NoSuchElementException();
             }
             T retVal = nextNode.getElement();
+            lastReturnedNode = nextNode;
             nextNode = nextNode.getNextNode();
             nextIndex++;
             return retVal;
@@ -276,14 +283,12 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 
         @Override
         public int nextIndex() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'nextIndex'");
+            return nextIndex;
         }
 
         @Override
         public int previousIndex() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'previousIndex'");
+            return nextIndex - 1;
         }
 
         @Override
@@ -291,17 +296,39 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
             if (iterModCount != modCount){
                 throw new ConcurrentModificationException();
             }
+            if (lastReturnedNode == null){
+                throw new IllegalStateException();
+            }
+            if(lastReturnedNode != head){
+                lastReturnedNode.getPreviousNode().setNextNode(lastReturnedNode.getNextNode());
+            } else {
+                head = head.getNextNode();
+            }
+            if(lastReturnedNode != tail){
+                lastReturnedNode.getNextNode().setPreviousNode(lastReturnedNode.getPreviousNode());
+            } else {
+                tail = tail.getPreviousNode();
+            }
+            if (lastReturnedNode != nextNode){//last move was next
+                nextIndex--; //fewer nodes to the left that there used to be
+            } else { //last move was previous
+                nextNode = nextNode.getNextNode();
+            }
+            lastReturnedNode = null;
+            size--;
+            modCount++;
+            iterModCount++;
         }
 
         @Override
         public void set(T e) {
-            // TODO Auto-generated method stub
+            // very similiar to remove.
             throw new UnsupportedOperationException("Unimplemented method 'set'");
         }
 
         @Override
         public void add(T e) {
-            // TODO Auto-generated method stub
+            //must
             throw new UnsupportedOperationException("Unimplemented method 'add'");
         }
 
