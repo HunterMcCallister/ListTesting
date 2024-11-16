@@ -3844,7 +3844,8 @@ if (SUPPORTS_LIST_ITERATOR) {
 			}
 		}
 	}
-}// end class IndexedUnsortedListTester
+}
+// end class IndexedUnsortedListTester
 
 /**
  * Interface for builder method Lambda references used above
