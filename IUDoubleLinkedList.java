@@ -3,13 +3,24 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
+/**
+ * A double-linked list implementation that allows for efficient insertions and deletions at both ends
+ * and in the middle. this can store an element of any type
+ */
 public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 
+    /** Reference to the first node in the list */
     private Node<T> head;
+    /** Reference to the last node in the list */
     private Node<T> tail;
+    /** The number of elements in the list */
     private int size;
+    /** Modification count for the iterators */
     private int modCount;
 
+    /**
+     * Makes an empty double-linked list.
+     */
     public IUDoubleLinkedList() {
         head = tail = null;
         size = 0;
@@ -125,7 +136,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
         if (tail != null) {
             tail.setNextNode(null);
         } else {
-            head = null; 
+            head = null;
         }
         size--;
         modCount++;
@@ -295,9 +306,16 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 
     /** ListIterator (and bassic Iterator) for IUDoubleLinkedList */
     private class DLLIterator implements ListIterator<T> {
+        /** The next node to return in the iteration */
         private Node<T> nextNode;
+
+        /** the index of nextNode */
         private int nextIndex;
+
+        /** the modification count for the iterator to detect concurrent modification  */
         private int iterModCount;
+
+        /** The last node returned by next() or previous(), null if none */
         private Node<T> lastReturnedNode;
 
         /** initializes iterator at the start of the list */
@@ -310,6 +328,8 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
          * Initialize in front of the given starting index
          * 
          * @param startingIndex index to start in front of
+         * @throws IndexOutOfBoundsException if the starting index is out of range (startingIndex < 0 || startingIndex > size)
+         */
          */
         public DLLIterator(int startingIndex) {
             if (startingIndex < 0 || startingIndex > size) {
@@ -330,7 +350,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
             if (iterModCount != modCount) {
                 throw new ConcurrentModificationException();
             }
-            return nextNode != null;
+            return nextIndex < size;
         }
 
         @Override
@@ -338,8 +358,8 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            T retVal = nextNode.getElement();
             lastReturnedNode = nextNode;
+            T retVal = nextNode.getElement();
             nextNode = nextNode.getNextNode();
             nextIndex++;
             return retVal;
@@ -350,7 +370,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
             if (iterModCount != modCount) {
                 throw new ConcurrentModificationException();
             }
-            return nextNode != head;
+            return nextIndex > 0;
         }
 
         @Override
@@ -432,8 +452,8 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
                 throw new ConcurrentModificationException();
             }
             Node<T> newNode = new Node<>(e);
-
-            if (nextNode == head) {
+        
+            if (nextIndex == 0) {
                 newNode.setNextNode(head);
                 if (head != null) {
                     head.setPreviousNode(newNode);
@@ -442,9 +462,13 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
                 if (tail == null) {
                     tail = newNode;
                 }
-            } else if (nextNode == null) {
-                tail.setNextNode(newNode);
-                newNode.setPreviousNode(tail);
+            } else if (nextIndex == size) {
+                if (tail != null) {
+                    tail.setNextNode(newNode);
+                    newNode.setPreviousNode(tail);
+                } else {
+                    head = newNode;
+                }
                 tail = newNode;
             } else {
                 Node<T> prevNode = nextNode.getPreviousNode();
