@@ -330,7 +330,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
          * @param startingIndex index to start in front of
          * @throws IndexOutOfBoundsException if the starting index is out of range (startingIndex < 0 || startingIndex > size)
          */
-         */
+         
         public DLLIterator(int startingIndex) {
             if (startingIndex < 0 || startingIndex > size) {
                 throw new IndexOutOfBoundsException();
